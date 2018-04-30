@@ -3,7 +3,7 @@ import { ShowAllBooks, AddBooks, DeleteBook } from "./books";
 // import logo from "./logo.svg";
 // import "./App.css";
 
-class Admin extends Component {
+class AdminHome extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -51,7 +51,7 @@ class Admin extends Component {
 
 		return (
 			<div align="center">
-				<ShowAllBooks purpose="toShow" />
+				<ShowAllBooks purpose="to_show" />
 				<button onClick={() => this.handleOnClick("add_button")}>
 					Add Book
 				</button>
@@ -67,4 +67,4 @@ class Admin extends Component {
 	}
 }
 
-export default Admin;
+export default AdminHome;

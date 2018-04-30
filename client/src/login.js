@@ -1,34 +1,25 @@
 import React, { Component } from "react";
-import Home from "./home.js";
+import tag from "./tag.js";
 
-class UserLogin extends Component {
+class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.memberLogIn = this.memberLogIn.bind(this);
-		this.ifError = this.ifError.bind(this);
-		this.state = {
-			member_id: null,
-			member_name: null
-		};
 	}
 
-	ifError(mobile_no, password, body) {
-		if (mobile_no.length !== 10) {
-			alert("ERROR : Mobile number");
-			return true;
+	memberLogIn = async () => {
+		var handleOnClick = this.props.handleOnClick;
+		var mobile_no = this.refs.mobile_no.value;
+		var password = this.refs.password.value;
+
+		if (mobile_no.length !== 10 && password.length < 6) {
+			alert("ERROR : Invalid input");
+			return;
 		}
-		if (password.length < 6) {
-			alert("ERROR : Password");
-			return true;
-		}
-		if (
-			body.filter(member => {
-				return Number(mobile_no) === member.mobile_no;
-			}).length === 0
-		) {
-			alert("ERROR : Member not present");
-			return true;
-		}
+
+		const res = await fetch("/login");
+		const body = await res.json();
+		if (res.status !== 200) throw Error(body.message);
 
 		var member = body.filter(member => {
 			return (
@@ -38,57 +29,47 @@ class UserLogin extends Component {
 		});
 
 		if (member.length === 0) {
-			alert("Login Error : Mobile number and Password do not match !!!");
-			return true;
+			alert("ERROR : Invalid details");
+			return;
 		}
-		return member[0];
-	}
 
-	memberLogIn = async () => {
-		var mobile_no = this.refs.mobile_no.value;
-		var password = this.refs.password.value;
-
-		const res = await fetch("/login");
-		const body = await res.json();
-		if (res.status !== 200) throw Error(body.message);
-
-		var member = this.ifError(mobile_no, password, body);
-		if (member === true) return;
-		else
-			this.setState({
-				member_id: member.member_id,
-				member_name: member.member_name
-			});
+		handleOnClick(member[0]);
 	};
 
 	render() {
-		let id = this.state.member_id;
-		let name = this.state.member_name;
 		return (
-			<div>
-				<font> Login here :</font>
-				<br />
-				<input
-					type="text"
-					placeholder="Enter mobile number"
-					ref="mobile_no"
-					size="30"
-				/>
-				<br />
-				<input
-					type="password"
-					placeholder="Enter password"
-					ref="password"
-					size="30"
-				/>
-				<br />
-				<button onClick={this.memberLogIn}>Login</button>
-				{id !== null && name !== null ? (
-					<Home member_id={id} member_name={name} />
-				) : null}
+			<div align="center">
+				<div id="login">
+					<tag.Lable value="Login here :" />
+					<br />
+					<input
+						type="text"
+						placeholder="Enter mobile number"
+						ref="mobile_no"
+						size="30"
+					/>
+					<br />
+					<input
+						type="password"
+						placeholder="Enter password"
+						ref="password"
+						size="30"
+					/>
+					<br />
+					<tag.Button onClick={this.memberLogIn} value="Log in" />
+				</div>
+				<div>
+					<br />
+					<br />
+					<tag.Lable value="New member ? Sign up here " />
+					<tag.Button
+						onClick={this.props.handleOnClick}
+						value="Sign up"
+					/>
+				</div>
 			</div>
 		);
 	}
 }
 
-export default UserLogin;
+export default Login;

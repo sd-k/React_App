@@ -1,51 +1,52 @@
 import React, { Component } from "react";
-import UserLogin from "./login";
-import UserSignIn from "./signin";
+import Login from "./login";
+import SignUp from "./signup";
+import MemberHome from "./member.js";
+import AdminHome from "./admin.js";
 
 class App extends Component {
 	constructor(props) {
 		super(props);
 		this.handleOnClick = this.handleOnClick.bind(this);
 		this.state = {
-			signInButtonClicked: false,
-			logInButtonClicked: true
+			member_name: null,
+			member_id: null,
+			signUpButtonClicked: false,
+			loginButtonClicked: true
 		};
 	}
-	handleOnClick(option) {
-		if (option === "sign_in") {
-			this.setState(prevState => ({
-				signInButtonClicked: !prevState.signInButtonClicked,
-				logInButtonClicked: !prevState.logInButtonClicked
-			}));
+	handleOnClick(member) {
+		if (member.member_id && member.member_name) {
+			this.setState({
+				member_id: member.member_id,
+				member_name: member.member_name
+			});
+			return;
 		}
-		if (option === "log_in") {
-			this.setState(prevState => ({
-				signInButtonClicked: !prevState.signInButtonClicked,
-				logInButtonClicked: !prevState.logInButtonClicked
-			}));
-		}
+
+		this.setState(prevState => ({
+			signUpButtonClicked: !prevState.signUpButtonClicked,
+			loginButtonClicked: !prevState.loginButtonClicked
+		}));
 	}
 
 	render() {
-		if (this.state.logInButtonClicked)
+		let member_id = this.state.member_id,
+			member_name = this.state.member_name;
+
+		if (member_id !== null && member_name !== null) {
+			if (member_id === 1 && member_name === "Sougata Das")
+				return <AdminHome />;
 			return (
-				<div align="center">
-					<UserLogin />
-					<p>Click to sign in :</p>
-					<button onClick={() => this.handleOnClick("sign_in")}>
-						Sign in
-					</button>
-				</div>
+				<MemberHome member_id={member_id} member_name={member_name} />
 			);
-		return (
-			<div align="center">
-				<UserSignIn />
-				<p>Click to log in :</p>
-				<button onClick={() => this.handleOnClick("log_in")}>
-					Log in
-				</button>
-			</div>
-		);
+		}
+
+		if (this.state.loginButtonClicked) {
+			return <Login handleOnClick={this.handleOnClick} />;
+		}
+
+		return <SignUp handleOnClick={this.handleOnClick} />;
 	}
 }
 

@@ -42,5 +42,63 @@ module.exports = {
 		} catch (e) {
 			console.error(e);
 		}
+	},
+	getBorrowedBooks: async id => {
+		var books;
+		try {
+			if (id)
+				books = await db.query(
+					"SELECT book_id,book_name,issue_date FROM borrowed_books where member_id=$1",
+					[id]
+				);
+			books = await db.query("SELECT * FROM borrowed_books");
+		} catch (e) {
+			console.error(e);
+		}
+		return books.rows;
+	},
+	putBorrowRequest: details => {
+		try {
+			console.log(details);
+			// db.query("INSERT INTO borrow_request values($1,$2)", details);
+		} catch (e) {
+			console.error(e);
+		}
+	},
+	putReturnRequest: details => {
+		try {
+			console.log(details);
+			// db.query('INSERT INTO return_request values($1,$2,$3)',details)
+		} catch (e) {
+			console.error(e);
+		}
+	},
+	getPendingBorrow: async id => {
+		let pendings;
+		try {
+			if (id)
+				pendings = await db.query(
+					"SELECT * FROM borrow_request where member_id=$1",
+					[id]
+				);
+			else pendings = await db.query("SELECT * FROM borrow_request");
+		} catch (e) {
+			console.error(e);
+		}
+		return pendings.rows;
+	},
+	getPendingReturn: async id => {
+		let pendings;
+		try {
+			if (id)
+				pendings = await db.query(
+					"SELECT * FROM return_request where member_id=$1",
+					[id]
+				);
+			else pendings = await db.query("SELECT * FROM return_request");
+		} catch (e) {
+			console.error(e);
+		}
+		return pendings.rows;
 	}
 };

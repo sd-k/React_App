@@ -1,11 +1,12 @@
 import React, { Component } from "react";
+import tag from "./tag";
 
-class UserSignIn extends Component {
+class SignUp extends Component {
 	constructor(props) {
 		super(props);
-		this.signInButtonClicked = this.signInButtonClicked.bind(this);
+		this.signUpButtonClicked = this.signUpButtonClicked.bind(this);
 		this.ifError = this.ifError.bind(this);
-		this.signIn = this.signIn.bind(this);
+		this.signUp = this.signUp.bind(this);
 	}
 
 	ifError(first_name, last_name, mobile_no, password, confirm_password) {
@@ -45,7 +46,7 @@ class UserSignIn extends Component {
 		}
 	}
 
-	signIn = async (name, mobile_no, confirm_password) => {
+	signUp = async (name, mobile_no, confirm_password) => {
 		let response = await fetch("/signin", {
 			method: "POST",
 			body: JSON.stringify({
@@ -59,7 +60,7 @@ class UserSignIn extends Component {
 		if (response.status !== 200) throw Error(body.message);
 	};
 
-	signInButtonClicked() {
+	signUpButtonClicked() {
 		let first_name = this.refs.first_name.value,
 			last_name = this.refs.last_name.value,
 			mobile_no = this.refs.mobile_no.value,
@@ -73,7 +74,7 @@ class UserSignIn extends Component {
 			confirm_password
 		);
 		if (error) return;
-		this.signIn(
+		this.signUp(
 			first_name.concat(" ", last_name),
 			mobile_no,
 			password,
@@ -83,48 +84,62 @@ class UserSignIn extends Component {
 
 	render() {
 		return (
-			<div>
-				<a>Enter details to sign in :</a>
-				<br />
-				<input
-					type="text"
-					ref="first_name"
-					placeholder="First name"
-					size="30"
-				/>
-				<br />
-				<input
-					type="text"
-					ref="last_name"
-					placeholder="Second name"
-					size="30"
-				/>
-				<br />
-				<input
-					type="text"
-					ref="mobile_no"
-					placeholder="Mobile Number"
-					size="30"
-				/>
-				<br />
-				<input
-					type="password"
-					ref="password"
-					placeholder="Password"
-					size="30"
-				/>
-				<br />
-				<input
-					type="password"
-					ref="confirm_password"
-					placeholder="Confirm Password"
-					size="30"
-				/>
-				<br />
-				<button onClick={this.signInButtonClicked}>Sign In</button>
+			<div align="center">
+				<div id="signup">
+					<tag.Lable value="Enter details to sign in :" />
+					<br />
+					<input
+						type="text"
+						ref="first_name"
+						placeholder="First name"
+						size="30"
+					/>
+					<br />
+					<input
+						type="text"
+						ref="last_name"
+						placeholder="Second name"
+						size="30"
+					/>
+					<br />
+					<input
+						type="text"
+						ref="mobile_no"
+						placeholder="Mobile Number"
+						size="30"
+					/>
+					<br />
+					<input
+						type="password"
+						ref="password"
+						placeholder="Password"
+						size="30"
+					/>
+					<br />
+					<input
+						type="password"
+						ref="confirm_password"
+						placeholder="Confirm Password"
+						size="30"
+					/>
+					<br />
+					<tag.Button
+						onClick={this.signUpButtonClicked}
+						value="Sign up"
+					/>
+				</div>
+				<div>
+					<br />
+					<br />
+					<tag.Lable value="Already a member ? Login here " />
+					<tag.Button
+						onClick={this.props.handleOnClick}
+						value="Log in"
+					/>
+				</div>
 			</div>
 		);
 	}
 }
 
-export default UserSignIn;
+export default SignUp;
