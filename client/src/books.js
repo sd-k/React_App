@@ -4,31 +4,30 @@ class ListOfBooks extends Component {
 	constructor(props) {
 		super(props);
 		this.deleteBooks = this.deleteBooks.bind(this);
-		this.borrowBooks = this.borrowBooks.bind(this);
+		this.borrowNewBook = this.borrowNewBook.bind(this);
 		this.state = {
-			request_left: 0,
-			requested_books: []
+			request_left: this.props.request_left,
+			requested_books: this.props.requested_books
 		};
 	}
-	componentDidMount() {
-		this.setState({ request_left: this.props.request_left });
-	}
-	borrowBooks = async book_id => {
+
+	borrowNewBook = async (book_id, book_name) => {
 		var member_id = this.props.member_id;
-		var borrowed_books = this.props.borrowed_books;
+		var requested_books = this.state.requested_books;
+		var requestedBooks = this.props.requestedBooks;
 		var request_left = this.state.request_left;
-		console.log("request_left", request_left);
-
-		console.log(member_id, book_id);
-
-		if (
-			borrowed_books.filter(book => {
-				return book_id === book.book_id;
-			}).length !== 0
-		) {
-			alert("Error : Book is Borrowed");
+		if (request_left === 0) {
+			alert("ERROR : No request left ");
 			return;
 		}
+		requested_books.push(book_name);
+		alert(book_name);
+
+		this.setState({
+			request_left: request_left - 1,
+			requested_books: requested_books
+		});
+		requestedBooks(request_left - 1, requested_books);
 
 		let response = await fetch("/members", {
 			method: "PUT",
@@ -37,8 +36,6 @@ class ListOfBooks extends Component {
 		});
 		let body = await response.json();
 		if (response.status !== 200) throw Error(body.message);
-
-		this.setState({ request_left: request_left - 1 });
 	};
 
 	deleteBooks = async book_id => {
@@ -67,6 +64,8 @@ class ListOfBooks extends Component {
 	render() {
 		let purpose = this.props.purpose;
 		let all_books = this.props.all_books;
+		let borrowed_books = this.props.borrowed_books;
+		let requested_books = this.state.requested_books;
 
 		if (all_books.length === 0) {
 			return (
@@ -121,14 +120,29 @@ class ListOfBooks extends Component {
 															{book.book_name}
 														</td>
 														<td>
-															<tag.Button
-																onClick={() =>
-																	this.borrowBooks(
-																		book.book_id
-																	)
+															{borrowed_books.filter(
+																borrwed_book => {
+																	return (
+																		book.book_id ===
+																		borrwed_book.book_id
+																	);
 																}
-																value="Borrow"
-															/>
+															).length !== 0 ? (
+																<tag.Lable value="not available" />
+															) : (
+																<tag.Button
+																	id={
+																		book.book_id
+																	}
+																	onClick={() =>
+																		this.borrowNewBook(
+																			book.book_id,
+																			book.book_name
+																		)
+																	}
+																	value="Borrow"
+																/>
+															)}
 														</td>
 													</tr>
 												);
@@ -167,6 +181,8 @@ class ShowAllBooks extends Component {
 					purpose={this.props.purpose}
 					member_id={this.props.member_id}
 					request_left={this.props.request_left}
+					requestedBooks={this.props.requestedBooks}
+					requested_books={this.props.requested_books}
 				/>
 			</div>
 		);

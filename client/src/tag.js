@@ -5,7 +5,11 @@ tag.Para = props => {
 };
 
 tag.Button = props => {
-	return <button onClick={props.onClick}>{props.value}</button>;
+	return (
+		<button onClick={props.onClick} disabled={props.disabled} id={props.id}>
+			{props.value}
+		</button>
+	);
 };
 tag.Lable = props => {
 	return (

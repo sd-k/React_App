@@ -10,6 +10,8 @@ class BorrowNewBooks extends React.Component {
 					purpose="to_borrow"
 					member_id={this.props.member_id}
 					request_left={this.props.request_left}
+					requestedBooks={this.props.requestedBooks}
+					requested_books={this.props.requested_books}
 				/>
 			</div>
 		);
@@ -102,7 +104,7 @@ class MemberHome extends React.Component {
 		super(props);
 		this.state = {
 			borrowed_books: [],
-			borrow_request: [],
+			requested_books: [],
 			return_request: [],
 			request_left: 0,
 			home_button_clicked: true,
@@ -110,6 +112,14 @@ class MemberHome extends React.Component {
 			return_button_clicked: false
 		};
 		this.handleOnClick = this.handleOnClick.bind(this);
+		this.requestedBooks = this.requestedBooks.bind(this);
+	}
+
+	requestedBooks(request_left, requested_books, book_id) {
+		this.setState({
+			request_left: request_left,
+			requested_books: this.state.requested_books
+		});
 	}
 
 	handleOnClick(purpose) {
@@ -145,9 +155,9 @@ class MemberHome extends React.Component {
 
 		this.setState({
 			borrowed_books: body[0],
-			borrow_request: body[1],
+			requested_books: body[1],
 			return_request: body[2],
-			request_left: 4 - (body[0].length + body[1].length)
+			request_left: 3 - (body[0].length + body[1].length)
 		});
 	};
 
@@ -172,12 +182,15 @@ class MemberHome extends React.Component {
 
 		if (this.state.borrow_button_clicked) {
 			let request_left = this.state.request_left;
-			console.log("clicked", request_left);
+			// let
+			// alert("You can borrow " + request_left + " books ");
 			return (
 				<div align="center">
 					<BorrowNewBooks
 						request_left={request_left}
 						member_id={this.props.member_id}
+						requestedBooks={this.requestedBooks}
+						requested_books={this.state.requested_books}
 					/>
 					<br />
 					<br />
@@ -191,28 +204,51 @@ class MemberHome extends React.Component {
 			);
 		}
 
-		if (this.state.home_button_clicked)
+		if (this.state.home_button_clicked) {
+			let requested_books = this.state.requested_books;
 			return (
 				<div align="center">
-					<BorrowedBooks
-						borrowed_books={this.state.borrowed_books}
-						purpose="to_show"
-					/>
-					<br />
-					<br />
-					<tag.Button
-						value="Return books"
-						onClick={() => this.handleOnClick("call_return")}
-					/>
-					{this.state.request_left > 0 ? (
-						<tag.Button
-							value="Borrow books"
-							onClick={() => this.handleOnClick("call_borrow")}
+					<div>
+						<BorrowedBooks
+							borrowed_books={this.state.borrowed_books}
+							purpose="to_show"
 						/>
+						<br />
+						<br />
+						<tag.Button
+							value="Return books"
+							onClick={() => this.handleOnClick("call_return")}
+						/>
+						{this.state.request_left > 0 ? (
+							<tag.Button
+								value="Borrow books"
+								onClick={() =>
+									this.handleOnClick("call_borrow")
+								}
+							/>
+						) : null}
+					</div>
+
+					{requested_books.length !== 0 ? (
+						<div>
+							<hr />
+							<tag.Lable value="Requested Books :" />
+							<table>
+								<tbody>
+									{requested_books.map((book, i) => {
+										return (
+											<tr key={i}>
+												<td>{book}</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
 					) : null}
 				</div>
 			);
-		return null;
+		}
 	}
 }
 export default MemberHome;
