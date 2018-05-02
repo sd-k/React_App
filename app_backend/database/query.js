@@ -78,7 +78,7 @@ module.exports = {
 		try {
 			if (id)
 				pendings = await db.query(
-					"SELECT * FROM borrow_request where member_id=$1",
+					"SELECT book_id,book_name FROM books JOIN borrow_request using(book_id) where member_id=$1",
 					[id]
 				);
 			else pendings = await db.query("SELECT * FROM borrow_request");

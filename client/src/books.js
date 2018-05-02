@@ -20,8 +20,8 @@ class ListOfBooks extends Component {
 			alert("ERROR : No request left ");
 			return;
 		}
-		requested_books.push(book_name);
-		alert(book_name);
+		var new_book = { book_id: book_id, book_name: book_name };
+		requested_books.push(new_book);
 
 		this.setState({
 			request_left: request_left - 1,
@@ -129,6 +129,15 @@ class ListOfBooks extends Component {
 																}
 															).length !== 0 ? (
 																<tag.Lable value="not available" />
+															) : requested_books.filter(
+																sent => {
+																	return (
+																		sent.book_id ===
+																		book.book_id
+																	);
+																}
+															).length !== 0 ? (
+																<tag.Lable value="Request sent" />
 															) : (
 																<tag.Button
 																	id={

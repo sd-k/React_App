@@ -235,10 +235,10 @@ class MemberHome extends React.Component {
 							<tag.Lable value="Requested Books :" />
 							<table>
 								<tbody>
-									{requested_books.map((book, i) => {
+									{requested_books.map(book => {
 										return (
-											<tr key={i}>
-												<td>{book}</td>
+											<tr key={book.book_id}>
+												<td>{book.book_name}</td>
 											</tr>
 										);
 									})}
